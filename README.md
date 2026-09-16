@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ⚡ QuizLive — Gerçek Zamanlı Multiplayer Quiz Web Uygulaması
 
 Kahoot benzeri, gerçek zamanlı (WebSocket tabanlı), profesyonel yarışma programı atmosferine sahip, modern ve responsive çok oyunculu bilgi yarışması web uygulaması.
@@ -117,3 +118,6 @@ veya
 ```bash
 python test_e2e_simulation.py
 ```
+=======
+# quiz-app
+>>>>>>> 3684ad383ee1dcf131d4cafd0849aaacfb74a30e
