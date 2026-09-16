@@ -36,7 +36,17 @@ STATIC_DIR = BASE_DIR / "static"
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+from dotenv import load_dotenv
+load_dotenv()
+
+# Güvenli Yönetici Şifresi: Kod içinde sabit şifre barındırılmaz.
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+if not ADMIN_PASSWORD:
+    raise RuntimeError(
+        "GÜVENLİK HATASI: 'ADMIN_PASSWORD' ortam değişkeni tanımlanmamış! "
+        "Uygulamanın çalışması için lütfen .env dosyasında veya ortam değişkenlerinde "
+        "ADMIN_PASSWORD değerini tanımlayın."
+    )
 
 
 # Pydantic Modelleri

@@ -1,0 +1,17 @@
+# Gizli ortam değişkenleri ve şifreler
+.env
+.env.local
+.env.*.local
+
+# Python derleme ve sanal ortam dosyaları
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Test ve önbellek dosyaları
+.pytest_cache/
+.coverage
+htmlcov/

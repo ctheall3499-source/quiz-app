@@ -6,7 +6,7 @@ puanlama ve oyun sonu akışını baştan sona simüle eder.
 """
 
 from starlette.testclient import TestClient
-from main import app
+from main import app, ADMIN_PASSWORD
 
 
 def receive_until_type(ws, target_type, max_reads=10):
@@ -22,7 +22,7 @@ def test_full_game_e2e_simulation():
     client = TestClient(app)
 
     # 1. Host (Admin) yetkisiyle oda oluşturuyor
-    res = client.post("/api/rooms", json={"host_name": "HostAdmin", "admin_key": "admin123"})
+    res = client.post("/api/rooms", json={"host_name": "HostAdmin", "admin_key": ADMIN_PASSWORD})
     assert res.status_code == 200
     host_data = res.json()
     assert host_data["success"] is True

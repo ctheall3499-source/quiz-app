@@ -86,18 +86,19 @@ def test_room_name_collision():
 
 def test_admin_authorization_required():
     """Normal kullanıcıların izinsiz oda açması engellenmeli, yalnızca admin açabilmelidir."""
+    from main import ADMIN_PASSWORD
     client = TestClient(app)
 
     # 1. Yanlış şifre ile deneme
-    res_wrong = client.post("/api/rooms", json={"host_name": "Korsan", "admin_key": "yanlis_sifre"})
+    res_wrong = client.post("/api/rooms", json={"host_name": "Korsan", "admin_key": "yanlis_sifre_denemesi"})
     assert res_wrong.status_code == 403
 
     # 2. Şifresiz veya boş şifre ile deneme
     res_empty = client.post("/api/rooms", json={"host_name": "Korsan", "admin_key": ""})
     assert res_empty.status_code == 403
 
-    # 3. Doğru admin şifresi ile deneme
-    res_correct = client.post("/api/rooms", json={"host_name": "AdminAli", "admin_key": "admin123"})
+    # 3. Ortam değişkeninden okunan doğru admin şifresi ile deneme
+    res_correct = client.post("/api/rooms", json={"host_name": "AdminAli", "admin_key": ADMIN_PASSWORD})
     assert res_correct.status_code == 200
     data = res_correct.json()
     assert data["success"] is True
@@ -105,8 +106,29 @@ def test_admin_authorization_required():
     assert data["is_host"] is True
 
     # 4. Admin verify endpoint testi
-    assert client.post("/api/admin/verify", json={"admin_key": "admin123"}).status_code == 200
-    assert client.post("/api/admin/verify", json={"admin_key": "hatali"}).status_code == 403
+    assert client.post("/api/admin/verify", json={"admin_key": ADMIN_PASSWORD}).status_code == 200
+    assert client.post("/api/admin/verify", json={"admin_key": "hatali_anahtar"}).status_code == 403
+
+
+def test_missing_admin_password_raises_runtime_error():
+    """ADMIN_PASSWORD tanımlanmadığında uygulamanın güvenli şekilde RuntimeError fırlattığı doğrulanır."""
+    from unittest.mock import patch
+    import importlib
+    import os
+    import sys
+
+    # Ortam değişkenlerini temizleyerek yükleme testi
+    with patch.dict(os.environ, {}, clear=True):
+        with patch("dotenv.load_dotenv"):
+            if "main" in sys.modules:
+                del sys.modules["main"]
+            with pytest.raises(RuntimeError, match="ADMIN_PASSWORD"):
+                importlib.import_module("main")
+
+    # Modülü test sonrası normale döndür
+    if "main" in sys.modules:
+        del sys.modules["main"]
+    importlib.import_module("main")
 
 
 @pytest.mark.asyncio

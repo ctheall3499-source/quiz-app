@@ -10,7 +10,8 @@ Kahoot benzeri, gerçek zamanlı (WebSocket tabanlı), profesyonel yarışma pro
 - **Admin / Güvenli Oda Oluşturma:**
   - Normal kullanıcılar oda oluşturamaz; ana sayfada yalnızca **"Odaya Katıl"** ekranı yer alır.
   - Oda oluşturma yetkisi yalnızca **Yöneticiye (Admin)** aittir.
-  - Üst kısımdaki **"🛡️ Yönetici"** butonu veya `/admin` adresi üzerinden açılan şifreli panel ile güvenli şekilde yeni yarışma odası açılır (Varsayılan Şifre: `admin123`, ortam değişkeni `ADMIN_PASSWORD` ile değiştirilebilir).
+  - Şifre kesinlikle kaynak kod içinde tutulmaz; `.env` dosyası veya sistem ortam değişkeni `ADMIN_PASSWORD` üzerinden güvenli şekilde okunur. Tanımlı değilse uygulama güvenli bir hata vererek çalışmayı reddeder.
+  - Üst kısımdaki **"🛡️ Yönetici"** butonu veya `/admin` adresi üzerinden açılan şifreli panel ile güvenli şekilde yeni yarışma odası açılır.
   - İzinsiz API çağrıları sunucu seviyesinde `403 Forbidden` ile engellenir.
 - **6 Haneli Benzersiz Oda Kodu:** Sunucu tarafından otomatik üretilen (Örn: `ABC123`), büyük/küçük harf duyarsız benzersiz oda sistemi.
 - **Host ve Oyuncu Rolleri:** Odayı oluşturan admin kullanıcı host yetkisine sahip olur. Sadece host oyunu başlatabilir, rauntları yönetebilir veya tekrar başlatabilir.
@@ -86,18 +87,25 @@ cd C:\Users\USER\.gemini\antigravity\scratch\quiz-app
 pip install -r requirements.txt
 ```
 
-### 2. Sunucuyu Başlatın
+### 2. Yönetici Şifresini Yapılandırın (.env)
+Proje dizininde `.env` dosyasını oluşturup (veya `.env.example` dosyasını kopyalayarak) yönetici şifrenizi tanımlayın:
+```bash
+# .env dosyası içeriği (Bu dosya .gitignore ile korunmaktadır):
+ADMIN_PASSWORD=guclu_ve_guvenli_admin_sifreniz
+```
+
+### 3. Sunucuyu Başlatın
 ```bash
 python main.py
 ```
 
 Konsolda sunucunun `http://localhost:8000` adresinde çalıştığını göreceksiniz.
 
-### 3. Nasıl Oynanır?
+### 4. Nasıl Oynanır?
 1. **Admin Olarak Oda Açma:**
    - Tarayıcınızda `http://localhost:8000` adresini açın.
    - Sağ üstteki **"🛡️ Yönetici"** butonuna tıklayın (veya doğrudan `http://localhost:8000/admin` adresine gidin).
-   - Admin şifresini (`admin123`) ve Host adınızı girip **"Yeni Oda Oluştur"** butonuna basın.
+   - `.env` dosyanızda belirlediğiniz Admin şifresini ve Host adınızı girip **"Yeni Oda Oluştur"** butonuna basın.
    - Oluşturulan 6 haneli oda kodu (Örn: `ABC123`) ekranda gösterilir.
 2. **Oyuncu Olarak Katılma:**
    - Yeni bir sekmede `http://localhost:8000` adresini açın.
