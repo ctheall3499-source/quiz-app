@@ -231,9 +231,10 @@ async def websocket_endpoint(websocket: WebSocket, room_code: str, player_id: st
 
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
     print("=" * 60)
     print("🚀 Quiz Web Uygulaması Başlatılıyor...")
-    print("📍 URL: http://localhost:8000")
-    print("📱 Aynı yerel ağdaki telefon/tabletler için: http://<BILGISAYAR_IP>:8000")
+    print(f"📍 URL: http://localhost:{port}")
+    print(f"📱 Yerel ağ / Production PORT: {port}")
     print("=" * 60)
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
